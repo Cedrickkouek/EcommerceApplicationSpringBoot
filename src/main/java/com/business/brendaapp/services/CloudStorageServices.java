@@ -23,10 +23,8 @@ import com.business.brendaapp.payloads.out.ResponseFileService;
 import com.business.brendaapp.utils.FileIoService;
 import com.business.brendaapp.utils.GenerateurMatricile;
 
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 public class CloudStorageServices implements FileServiceInterface{
 
     @Value("${bucketName}")

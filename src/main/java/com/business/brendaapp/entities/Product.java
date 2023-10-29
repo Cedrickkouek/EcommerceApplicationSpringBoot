@@ -1,5 +1,8 @@
 package com.business.brendaapp.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 
 import org.springframework.data.annotation.Id;
@@ -24,5 +27,5 @@ public class Product{
     private Double price;
     private Category category;
     private String description;
-    private String image;
+    private List<String> image =  new ArrayList<>();
 }
