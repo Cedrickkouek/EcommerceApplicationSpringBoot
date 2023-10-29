@@ -140,6 +140,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>brendaappecommerce</finalName>
 	</build>
 
 </project>
