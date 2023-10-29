@@ -63,11 +63,28 @@ public class ProductService {
         }
     }
 
-
-    public Product editProductByid(String updateProductPayload2, MultipartFile file) throws ProductNotFoundException, IOException, ConvertMultipart2FileException
+    public Product AddImageToProduct(String idProduct, MultipartFile file) throws IOException, ConvertMultipart2FileException, ProductNotFoundException
     {
-        UpdateProductPayload updateProductPayload =  Serializer.serializeProductPayload(updateProductPayload2);
+        if(productRepository.existsById(idProduct))
+        {
+            Product product = productRepository.findById(idProduct).get();
+            ResponseFileService response = s3Service.saveFile(file, GlobalConfig.getPathUrl(product.getCategory()));
 
+            List<String> image = new ArrayList<>();
+            image = product.getImage();
+            image.add(response.getMessage() );
+            product.setImage(image);
+            productRepository.save(product);
+            return product;
+        }
+        else
+        {
+            throw new ProductNotFoundException("Le produit don't l'id est "+idProduct+" n'existe pas!");
+        }
+    }
+
+    public Product editProductByid(UpdateProductPayload updateProductPayload) throws ProductNotFoundException, IOException, ConvertMultipart2FileException
+    {
         boolean checkProduct =  productRepository.existsById(updateProductPayload.getIdProduit());
         if(checkProduct)
         {
@@ -80,17 +97,7 @@ public class ProductService {
                     {
                         if(updateProductPayload.getTitle().isEmpty())
                         {
-                            if(file.isEmpty())
-                            {
-                                
-                            }
-                            else
-                            {
-                                ResponseFileService response = s3Service.saveFile(file, GlobalConfig.getPathUrl(Category.valueOf(updateProductPayload.getCategory())));
-                                var images = product.getImage();
-                                images.add(response.getMessage());
-                                product.setImage(images);
-                            }
+                    
                         }
                         else
                         {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import com.business.brendaapp.entities.Product;
 import com.business.brendaapp.exception.ConvertMultipart2FileException;
 import com.business.brendaapp.exception.InvalidCategoryException;
 import com.business.brendaapp.exception.ProductNotFoundException;
+import com.business.brendaapp.payloads.in.UpdateProductPayload;
 import com.business.brendaapp.services.ProductService;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -53,9 +55,16 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
     @PutMapping(value = "/editProduct", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Product> editProduct(@Valid @RequestParam("updateProductPayload") String updateProductPayload, @RequestParam(value = "file") MultipartFile file) throws ProductNotFoundException, IOException, ConvertMultipart2FileException
+    public ResponseEntity<Product> editProduct(@Valid @RequestBody UpdateProductPayload updateProductPayload) throws ProductNotFoundException, IOException, ConvertMultipart2FileException
     {
-        Product product = productService.editProductByid(updateProductPayload, file);
+        Product product = productService.editProductByid(updateProductPayload);
+        return new ResponseEntity<Product>(product, HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping(value = "/AddImageToProduct/{idProduct}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Product> addImageToProduct(@Valid @RequestParam("createProductPayload") String createProductPayload, @RequestParam(value = "file") MultipartFile file) throws IOException, ConvertMultipart2FileException, ProductNotFoundException
+    {
+        Product product = productService.AddImageToProduct(createProductPayload, file);
         return new ResponseEntity<Product>(product, HttpStatus.ACCEPTED);
     }
 }
